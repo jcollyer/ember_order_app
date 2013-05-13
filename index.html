@@ -64,6 +64,7 @@
       <ul id="menu">
         {{#each controller}}
           <li>
+          <a href="#" {{action "addFood" this }}>
           <img {{ bindAttr src="imageUrl" }} />
             {{ name }}
           </li>

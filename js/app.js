@@ -6,6 +6,13 @@ App.Router.map(function() {
   });
 });
 
+
+App.IndexRoute = Ember.Route.extend({
+  redirect: function(){
+    this.transitionTo('tables');
+  }
+})
+
 App.TablesRoute = Ember.Route.extend({
   model: function() {
     return App.Table.find();
@@ -18,11 +25,20 @@ App.ApplicationRoute = Ember.Route.extend({
   }
 });
 
-App.TablesController = Ember.ArrayController.extend();
+//App.TablesController = Ember.ArrayController.extend();
 
-App.FoodController = Ember.ArrayController.extend();
+App.FoodController = Ember.ArrayController.extend({
+  addFood: function(food) {
+    var table = this.controllerFor('table').get('model'),
+        tabItems = table.get('tab.tabItems');
+    tabItems.createRecord({
+      food:food,
+      cents: food.get('cents')
+    });
+  }
+});
 
-App.TabController = Ember.ObjectController.extend();
+//App.TabController = Ember.ObjectController.extend();
 
 App.Store = DS.Store.extend({
   revision: 11,
