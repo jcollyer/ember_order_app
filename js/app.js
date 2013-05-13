@@ -1,48 +1,27 @@
 var App = Ember.Application.create();
 
 //Router
-App.Router.map(function() {
+App.Router.map(function(){
 	this.resource('tables', function() {
-		this.resource('table', {path:':ta ble_id'});
-	});
+		this.resource('table', {path:':table_id'});
+	});  
 });
 
-App.TablesRoute = Ember.Route.extend({
+App.ApplicationRoute = Ember.Route.extend({
+	setupController: function(){
+		this.controllerFor('food').set('model', App.Food.find());
+	}
+});
+
+App.TableRoute = Ember.Route.extend({
 	model: function() {
 		return App.Table.find();
 	}
 });
 
-App.ApplicationRoute = Ember.Route.extend({
-	setupController: function(){
-		this.controllerFor('food').set('model', App.Food.find() );
-		
-	}
-});
-
-//Controller
 App.TablesController = Ember.ArrayController.extend();
 
-App.FoodController = Ember.ArrayController.extend({
-	addFood: function(food) {
-		var table = this.controllerFor('table').get('model'),
-				tabItems = table.get('tab.tabItems');
-		tabItems.createRecord({
-			food: food,
-			cents: food.get('cents')
-		});
-	}
-});
-
-App.TabController = Ember.ObjectController.extend();
-
-//View Helpers
-Ember.Handlebars.registerBoundHelper('money', function(value){
-	
-	return (value % 100 === 0 ?
-					value / 100 + '.00' :
-					parseInt(value / 100, 10) + '.' +value % 100);
-});
+App.FoodController = Ember.ArrayController.extend();
 
 
 // Models
@@ -56,12 +35,7 @@ App.Table = DS.Model.extend({
 });
 
 App.Tab = DS.Model.extend({
-  tabItems: DS.hasMany('App.TabItem'),
-  cents: function() {
-  	return this.get('tabItems').getEach('cents').reduce(function(accum, item) {
-  		return accum + item;
-  	}, 0);
-  }.property('tabItems.@each.cents')
+  tabItems: DS.hasMany('App.TabItem')
 });
 
 App.TabItem = DS.Model.extend({
